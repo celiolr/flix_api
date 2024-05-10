@@ -1,4 +1,6 @@
+from django.core.validators import MaxValueValidator
 from django.db import models
+from django.utils import timezone
 
 NATIONALITY_CHOICES = (
     ('USA', 'Estados Unidos'),
@@ -9,7 +11,12 @@ NATIONALITY_CHOICES = (
 # Create your models here.
 class Actor(models.Model):
     name = models.CharField(max_length=200)
-    birthday = models.DateField(null=True, blank=True)
+    birthday = models.DateField(null=True, blank=True,
+                                validators=[MaxValueValidator(limit_value=timezone.now().date(),
+                                                              message="Data de Nascimento deve ser menor ou igual a "
+                                                                      "data de hoje."),
+                                            ],
+                                )
     nationality = models.CharField(
         max_length=100,
         choices=NATIONALITY_CHOICES,
